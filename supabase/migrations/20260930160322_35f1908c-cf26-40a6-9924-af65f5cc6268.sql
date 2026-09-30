@@ -1,0 +1,3 @@
+REVOKE EXECUTE ON FUNCTION public.has_role(uuid, public.app_role), public.my_client_id(), public.client_is_active(uuid), public.can_access_equipment(uuid), public.update_my_profile(text,text), public.recompute_client_access(uuid), public.on_rental_change(), public.handle_new_user() FROM PUBLIC, anon;
+REVOKE EXECUTE ON FUNCTION public.recompute_client_access(uuid), public.on_rental_change(), public.handle_new_user() FROM authenticated;
+GRANT EXECUTE ON FUNCTION public.has_role(uuid, public.app_role), public.my_client_id(), public.client_is_active(uuid), public.can_access_equipment(uuid), public.update_my_profile(text,text) TO authenticated;
