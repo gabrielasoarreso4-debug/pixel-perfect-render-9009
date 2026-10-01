@@ -12,8 +12,8 @@ import { Label } from "@/components/ui/label";
 type Mode = "login" | "signup" | "forgot";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (s: Record<string, unknown>): { mode?: Mode } => ({
-    mode: s.mode === "signup" || s.mode === "forgot" ? s.mode : undefined,
+  validateSearch: (s: Record<string, unknown>): { mode?: Mode | undefined } => ({
+    mode: s["mode"] === "signup" || s["mode"] === "forgot" ? (s["mode"] as Mode) : undefined,
   }),
   head: () => ({
     meta: [
@@ -63,7 +63,7 @@ function AuthPage() {
         if (error) throw new Error("E-mail ou senha incorretos.");
       } else if (mode === "signup") {
         const parsed = signupSchema.safeParse(form);
-        if (!parsed.success) throw new Error(parsed.error.issues[0].message);
+        if (!parsed.success) throw new Error(parsed.error.issues[0]?.message ?? "Dados inválidos");
         const { error } = await supabase.auth.signUp({
           email: parsed.data.email,
           password: parsed.data.password,

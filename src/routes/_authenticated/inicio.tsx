@@ -27,7 +27,7 @@ const SHORTCUTS = [
 function Home() {
   const { data: me } = useMe();
   const { data: equipments = [], isLoading } = useMyEquipments();
-  const firstName = (me?.client?.full_name || me?.user.user_metadata?.full_name || "").split(" ")[0];
+  const firstName = (me?.client?.full_name || (me?.user.user_metadata?.["full_name"] as string) || "").split(" ")[0];
 
   return (
     <div className="space-y-10">
