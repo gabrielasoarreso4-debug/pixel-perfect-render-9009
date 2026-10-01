@@ -1,0 +1,1 @@
+UPDATE public.app_settings SET support_whatsapp = '5551995582168', updated_at = now() WHERE id = 1;
