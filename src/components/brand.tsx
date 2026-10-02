@@ -1,5 +1,5 @@
 import { cn } from "@/lib/utils";
-import type { Equipment } from "@/lib/data";
+import type { Equipamento } from "@/lib/data";
 
 export function Wordmark({ className, light }: { className?: string; light?: boolean }) {
   return (
@@ -28,14 +28,14 @@ export function EquipmentImage({
   equipment,
   className,
 }: {
-  equipment: Pick<Equipment, "name" | "image_url">;
+  equipment: Pick<Equipamento, "nome" | "foto_url">;
   className?: string;
 }) {
-  if (equipment.image_url) {
+  if (equipment.foto_url) {
     return (
       <img
-        src={equipment.image_url}
-        alt={equipment.name}
+        src={equipment.foto_url}
+        alt={equipment.nome}
         loading="lazy"
         className={cn("h-full w-full bg-surface object-contain", className)}
       />
@@ -51,7 +51,7 @@ export function EquipmentImage({
       <div className="absolute -right-10 -top-10 size-48 rounded-full border border-primary-foreground/30" />
       <div className="absolute -right-2 top-16 size-32 rounded-full border border-primary-foreground/20" />
       <span className="relative font-display text-xl font-semibold text-primary-foreground">
-        {equipment.name}
+        {equipment.nome}
       </span>
     </div>
   );

@@ -12,11 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
-import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedCalculadoraRouteImport } from './routes/_authenticated/calculadora'
-import { Route as AuthenticatedConteudosRouteImport } from './routes/_authenticated/conteudos'
-import { Route as AuthenticatedInicioRouteImport } from './routes/_authenticated/inicio'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedSuporteRouteImport } from './routes/_authenticated/suporte'
 import { Route as AuthenticatedEquipamentosIndexRouteImport } from './routes/_authenticated/equipamentos.index'
@@ -36,32 +32,12 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ResetPasswordRoute = ResetPasswordRouteImport.update({
-  id: '/reset-password',
-  path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
-  id: '/admin',
-  path: '/admin',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedCalculadoraRoute =
   AuthenticatedCalculadoraRouteImport.update({
     id: '/calculadora',
     path: '/calculadora',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
-const AuthenticatedConteudosRoute = AuthenticatedConteudosRouteImport.update({
-  id: '/conteudos',
-  path: '/conteudos',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedInicioRoute = AuthenticatedInicioRouteImport.update({
-  id: '/inicio',
-  path: '/inicio',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
 const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
@@ -88,11 +64,7 @@ const AuthenticatedEquipamentosIdRoute =
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/admin': typeof AuthenticatedAdminRoute
   '/calculadora': typeof AuthenticatedCalculadoraRoute
-  '/conteudos': typeof AuthenticatedConteudosRoute
-  '/inicio': typeof AuthenticatedInicioRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/suporte': typeof AuthenticatedSuporteRoute
   '/equipamentos/$id': typeof AuthenticatedEquipamentosIdRoute
@@ -101,11 +73,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/admin': typeof AuthenticatedAdminRoute
   '/calculadora': typeof AuthenticatedCalculadoraRoute
-  '/conteudos': typeof AuthenticatedConteudosRoute
-  '/inicio': typeof AuthenticatedInicioRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/suporte': typeof AuthenticatedSuporteRoute
   '/equipamentos/$id': typeof AuthenticatedEquipamentosIdRoute
@@ -116,11 +84,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
-  '/reset-password': typeof ResetPasswordRoute
-  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/calculadora': typeof AuthenticatedCalculadoraRoute
-  '/_authenticated/conteudos': typeof AuthenticatedConteudosRoute
-  '/_authenticated/inicio': typeof AuthenticatedInicioRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/suporte': typeof AuthenticatedSuporteRoute
   '/_authenticated/equipamentos/$id': typeof AuthenticatedEquipamentosIdRoute
@@ -131,11 +95,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
-    | '/reset-password'
-    | '/admin'
     | '/calculadora'
-    | '/conteudos'
-    | '/inicio'
     | '/perfil'
     | '/suporte'
     | '/equipamentos/$id'
@@ -144,11 +104,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
-    | '/reset-password'
-    | '/admin'
     | '/calculadora'
-    | '/conteudos'
-    | '/inicio'
     | '/perfil'
     | '/suporte'
     | '/equipamentos/$id'
@@ -158,11 +114,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
-    | '/reset-password'
-    | '/_authenticated/admin'
     | '/_authenticated/calculadora'
-    | '/_authenticated/conteudos'
-    | '/_authenticated/inicio'
     | '/_authenticated/perfil'
     | '/_authenticated/suporte'
     | '/_authenticated/equipamentos/$id'
@@ -173,7 +125,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
-  ResetPasswordRoute: typeof ResetPasswordRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -199,39 +150,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/reset-password': {
-      id: '/reset-password'
-      path: '/reset-password'
-      fullPath: '/reset-password'
-      preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated/admin': {
-      id: '/_authenticated/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AuthenticatedAdminRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
     '/_authenticated/calculadora': {
       id: '/_authenticated/calculadora'
       path: '/calculadora'
       fullPath: '/calculadora'
       preLoaderRoute: typeof AuthenticatedCalculadoraRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/conteudos': {
-      id: '/_authenticated/conteudos'
-      path: '/conteudos'
-      fullPath: '/conteudos'
-      preLoaderRoute: typeof AuthenticatedConteudosRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/inicio': {
-      id: '/_authenticated/inicio'
-      path: '/inicio'
-      fullPath: '/inicio'
-      preLoaderRoute: typeof AuthenticatedInicioRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/perfil': {
@@ -266,10 +189,7 @@ declare module '@tanstack/react-router' {
 }
 
 interface AuthenticatedRouteRouteChildren {
-  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
   AuthenticatedCalculadoraRoute: typeof AuthenticatedCalculadoraRoute
-  AuthenticatedConteudosRoute: typeof AuthenticatedConteudosRoute
-  AuthenticatedInicioRoute: typeof AuthenticatedInicioRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedSuporteRoute: typeof AuthenticatedSuporteRoute
   AuthenticatedEquipamentosIdRoute: typeof AuthenticatedEquipamentosIdRoute
@@ -277,10 +197,7 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
-  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
   AuthenticatedCalculadoraRoute: AuthenticatedCalculadoraRoute,
-  AuthenticatedConteudosRoute: AuthenticatedConteudosRoute,
-  AuthenticatedInicioRoute: AuthenticatedInicioRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedSuporteRoute: AuthenticatedSuporteRoute,
   AuthenticatedEquipamentosIdRoute: AuthenticatedEquipamentosIdRoute,
@@ -294,7 +211,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
-  ResetPasswordRoute: ResetPasswordRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
