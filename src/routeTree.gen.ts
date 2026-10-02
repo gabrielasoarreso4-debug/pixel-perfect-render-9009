@@ -13,6 +13,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedCalculadoraRouteImport } from './routes/_authenticated/calculadora'
+import { Route as AuthenticatedHomeRouteImport } from './routes/_authenticated/home'
 import { Route as AuthenticatedPerfilRouteImport } from './routes/_authenticated/perfil'
 import { Route as AuthenticatedSuporteRouteImport } from './routes/_authenticated/suporte'
 import { Route as AuthenticatedEquipamentosIndexRouteImport } from './routes/_authenticated/equipamentos.index'
@@ -38,6 +39,11 @@ const AuthenticatedCalculadoraRoute =
     path: '/calculadora',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedHomeRoute = AuthenticatedHomeRouteImport.update({
+  id: '/home',
+  path: '/home',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const AuthenticatedPerfilRoute = AuthenticatedPerfilRouteImport.update({
   id: '/perfil',
   path: '/perfil',
@@ -65,6 +71,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calculadora': typeof AuthenticatedCalculadoraRoute
+  '/home': typeof AuthenticatedHomeRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/suporte': typeof AuthenticatedSuporteRoute
   '/equipamentos/$id': typeof AuthenticatedEquipamentosIdRoute
@@ -74,6 +81,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/calculadora': typeof AuthenticatedCalculadoraRoute
+  '/home': typeof AuthenticatedHomeRoute
   '/perfil': typeof AuthenticatedPerfilRoute
   '/suporte': typeof AuthenticatedSuporteRoute
   '/equipamentos/$id': typeof AuthenticatedEquipamentosIdRoute
@@ -85,6 +93,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/_authenticated/calculadora': typeof AuthenticatedCalculadoraRoute
+  '/_authenticated/home': typeof AuthenticatedHomeRoute
   '/_authenticated/perfil': typeof AuthenticatedPerfilRoute
   '/_authenticated/suporte': typeof AuthenticatedSuporteRoute
   '/_authenticated/equipamentos/$id': typeof AuthenticatedEquipamentosIdRoute
@@ -96,6 +105,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calculadora'
+    | '/home'
     | '/perfil'
     | '/suporte'
     | '/equipamentos/$id'
@@ -105,6 +115,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/calculadora'
+    | '/home'
     | '/perfil'
     | '/suporte'
     | '/equipamentos/$id'
@@ -115,6 +126,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/_authenticated/calculadora'
+    | '/_authenticated/home'
     | '/_authenticated/perfil'
     | '/_authenticated/suporte'
     | '/_authenticated/equipamentos/$id'
@@ -157,6 +169,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedCalculadoraRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/home': {
+      id: '/_authenticated/home'
+      path: '/home'
+      fullPath: '/home'
+      preLoaderRoute: typeof AuthenticatedHomeRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/perfil': {
       id: '/_authenticated/perfil'
       path: '/perfil'
@@ -190,6 +209,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedCalculadoraRoute: typeof AuthenticatedCalculadoraRoute
+  AuthenticatedHomeRoute: typeof AuthenticatedHomeRoute
   AuthenticatedPerfilRoute: typeof AuthenticatedPerfilRoute
   AuthenticatedSuporteRoute: typeof AuthenticatedSuporteRoute
   AuthenticatedEquipamentosIdRoute: typeof AuthenticatedEquipamentosIdRoute
@@ -198,6 +218,7 @@ interface AuthenticatedRouteRouteChildren {
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedCalculadoraRoute: AuthenticatedCalculadoraRoute,
+  AuthenticatedHomeRoute: AuthenticatedHomeRoute,
   AuthenticatedPerfilRoute: AuthenticatedPerfilRoute,
   AuthenticatedSuporteRoute: AuthenticatedSuporteRoute,
   AuthenticatedEquipamentosIdRoute: AuthenticatedEquipamentosIdRoute,
