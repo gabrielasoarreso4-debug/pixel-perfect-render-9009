@@ -35,375 +35,268 @@ export type Database = {
         }
         Relationships: []
       }
-      client_equipments: {
+      chamados: {
         Row: {
-          client_id: string
+          assunto: string
+          categoria: string
+          cliente_id: string
           created_at: string
-          equipment_id: string
+          equipamento_id: string | null
           id: string
+          mensagem: string
+          resposta: string | null
+          status: string
         }
         Insert: {
-          client_id: string
+          assunto: string
+          categoria: string
+          cliente_id: string
           created_at?: string
-          equipment_id: string
+          equipamento_id?: string | null
           id?: string
+          mensagem: string
+          resposta?: string | null
+          status?: string
         }
         Update: {
-          client_id?: string
+          assunto?: string
+          categoria?: string
+          cliente_id?: string
           created_at?: string
-          equipment_id?: string
+          equipamento_id?: string | null
           id?: string
+          mensagem?: string
+          resposta?: string | null
+          status?: string
         }
         Relationships: [
           {
-            foreignKeyName: "client_equipments_client_id_fkey"
-            columns: ["client_id"]
+            foreignKeyName: "chamados_cliente_id_fkey"
+            columns: ["cliente_id"]
             isOneToOne: false
-            referencedRelation: "clients"
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "client_equipments_equipment_id_fkey"
-            columns: ["equipment_id"]
+            foreignKeyName: "chamados_equipamento_id_fkey"
+            columns: ["equipamento_id"]
             isOneToOne: false
-            referencedRelation: "equipments"
+            referencedRelation: "equipamentos"
             referencedColumns: ["id"]
           },
         ]
       }
-      clients: {
+      custos_diarios: {
         Row: {
-          access_expires_at: string | null
-          access_start_date: string | null
-          blocked: boolean
+          aluguel_equipamento: number
+          anuncio: number
+          cliente_id: string
           created_at: string
-          email: string
-          full_name: string
+          data: string
+          faturamento: number
           id: string
-          last_rental_date: string | null
-          notes: string | null
-          updated_at: string
-          user_id: string | null
+          insumos: number
+          locacao_id: string | null
+        }
+        Insert: {
+          aluguel_equipamento?: number
+          anuncio?: number
+          cliente_id: string
+          created_at?: string
+          data?: string
+          faturamento?: number
+          id?: string
+          insumos?: number
+          locacao_id?: string | null
+        }
+        Update: {
+          aluguel_equipamento?: number
+          anuncio?: number
+          cliente_id?: string
+          created_at?: string
+          data?: string
+          faturamento?: number
+          id?: string
+          insumos?: number
+          locacao_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "custos_diarios_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "custos_diarios_locacao_id_fkey"
+            columns: ["locacao_id"]
+            isOneToOne: false
+            referencedRelation: "locacoes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      equipamentos: {
+        Row: {
+          ativo: boolean
+          created_at: string
+          descricao: string | null
+          foto_url: string | null
+          id: string
+          link_marketing: string | null
+          link_treinamento: string | null
+          nome: string
+          ordem: number
+          protocolo_pdf_path: string | null
+          slug: string
+          valor_diaria_padrao: number | null
+        }
+        Insert: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          foto_url?: string | null
+          id?: string
+          link_marketing?: string | null
+          link_treinamento?: string | null
+          nome: string
+          ordem?: number
+          protocolo_pdf_path?: string | null
+          slug: string
+          valor_diaria_padrao?: number | null
+        }
+        Update: {
+          ativo?: boolean
+          created_at?: string
+          descricao?: string | null
+          foto_url?: string | null
+          id?: string
+          link_marketing?: string | null
+          link_treinamento?: string | null
+          nome?: string
+          ordem?: number
+          protocolo_pdf_path?: string | null
+          slug?: string
+          valor_diaria_padrao?: number | null
+        }
+        Relationships: []
+      }
+      faq: {
+        Row: {
+          created_at: string
+          equipamento_id: string | null
+          id: string
+          pergunta: string
+          resposta: string
+        }
+        Insert: {
+          created_at?: string
+          equipamento_id?: string | null
+          id?: string
+          pergunta: string
+          resposta: string
+        }
+        Update: {
+          created_at?: string
+          equipamento_id?: string | null
+          id?: string
+          pergunta?: string
+          resposta?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "faq_equipamento_id_fkey"
+            columns: ["equipamento_id"]
+            isOneToOne: false
+            referencedRelation: "equipamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      locacoes: {
+        Row: {
+          cliente_id: string
+          created_at: string
+          data_fim: string
+          data_inicio: string
+          diarias_contratadas: number
+          equipamento_id: string
+          horas_por_diaria: number
+          id: string
+          status: string
+          valor_diaria: number
+        }
+        Insert: {
+          cliente_id: string
+          created_at?: string
+          data_fim: string
+          data_inicio: string
+          diarias_contratadas: number
+          equipamento_id: string
+          horas_por_diaria?: number
+          id?: string
+          status?: string
+          valor_diaria?: number
+        }
+        Update: {
+          cliente_id?: string
+          created_at?: string
+          data_fim?: string
+          data_inicio?: string
+          diarias_contratadas?: number
+          equipamento_id?: string
+          horas_por_diaria?: number
+          id?: string
+          status?: string
+          valor_diaria?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "locacoes_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "locacoes_equipamento_id_fkey"
+            columns: ["equipamento_id"]
+            isOneToOne: false
+            referencedRelation: "equipamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          acesso_ate: string | null
+          acesso_ativo: boolean
+          created_at: string
+          id: string
+          nome: string
+          usuario: string
           whatsapp: string | null
         }
         Insert: {
-          access_expires_at?: string | null
-          access_start_date?: string | null
-          blocked?: boolean
+          acesso_ate?: string | null
+          acesso_ativo?: boolean
           created_at?: string
-          email: string
-          full_name?: string
-          id?: string
-          last_rental_date?: string | null
-          notes?: string | null
-          updated_at?: string
-          user_id?: string | null
+          id: string
+          nome: string
+          usuario: string
           whatsapp?: string | null
         }
         Update: {
-          access_expires_at?: string | null
-          access_start_date?: string | null
-          blocked?: boolean
+          acesso_ate?: string | null
+          acesso_ativo?: boolean
           created_at?: string
-          email?: string
-          full_name?: string
           id?: string
-          last_rental_date?: string | null
-          notes?: string | null
-          updated_at?: string
-          user_id?: string | null
+          nome?: string
+          usuario?: string
           whatsapp?: string | null
         }
         Relationships: []
-      }
-      contents: {
-        Row: {
-          category: string | null
-          created_at: string
-          description: string | null
-          equipment_id: string | null
-          id: string
-          provider: string | null
-          published: boolean
-          section: string
-          sort_order: number
-          thumbnail_url: string | null
-          title: string
-          updated_at: string
-          url: string | null
-        }
-        Insert: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          equipment_id?: string | null
-          id?: string
-          provider?: string | null
-          published?: boolean
-          section: string
-          sort_order?: number
-          thumbnail_url?: string | null
-          title: string
-          updated_at?: string
-          url?: string | null
-        }
-        Update: {
-          category?: string | null
-          created_at?: string
-          description?: string | null
-          equipment_id?: string | null
-          id?: string
-          provider?: string | null
-          published?: boolean
-          section?: string
-          sort_order?: number
-          thumbnail_url?: string | null
-          title?: string
-          updated_at?: string
-          url?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "contents_equipment_id_fkey"
-            columns: ["equipment_id"]
-            isOneToOne: false
-            referencedRelation: "equipments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      equipment_views: {
-        Row: {
-          client_id: string
-          created_at: string
-          equipment_id: string
-          id: string
-        }
-        Insert: {
-          client_id: string
-          created_at?: string
-          equipment_id: string
-          id?: string
-        }
-        Update: {
-          client_id?: string
-          created_at?: string
-          equipment_id?: string
-          id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "equipment_views_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "equipment_views_equipment_id_fkey"
-            columns: ["equipment_id"]
-            isOneToOne: false
-            referencedRelation: "equipments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      equipments: {
-        Row: {
-          active: boolean
-          created_at: string
-          default_days_per_month: number | null
-          default_procedure_price: number | null
-          default_procedures_per_day: number | null
-          description: string | null
-          id: string
-          image_url: string | null
-          name: string
-          short_description: string | null
-          slug: string
-          sort_order: number
-          updated_at: string
-        }
-        Insert: {
-          active?: boolean
-          created_at?: string
-          default_days_per_month?: number | null
-          default_procedure_price?: number | null
-          default_procedures_per_day?: number | null
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          name: string
-          short_description?: string | null
-          slug: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Update: {
-          active?: boolean
-          created_at?: string
-          default_days_per_month?: number | null
-          default_procedure_price?: number | null
-          default_procedures_per_day?: number | null
-          description?: string | null
-          id?: string
-          image_url?: string | null
-          name?: string
-          short_description?: string | null
-          slug?: string
-          sort_order?: number
-          updated_at?: string
-        }
-        Relationships: []
-      }
-      notifications: {
-        Row: {
-          body: string | null
-          channel: string
-          client_id: string
-          created_at: string
-          id: string
-          kind: string
-          read_at: string | null
-          title: string
-        }
-        Insert: {
-          body?: string | null
-          channel?: string
-          client_id: string
-          created_at?: string
-          id?: string
-          kind: string
-          read_at?: string | null
-          title: string
-        }
-        Update: {
-          body?: string | null
-          channel?: string
-          client_id?: string
-          created_at?: string
-          id?: string
-          kind?: string
-          read_at?: string | null
-          title?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "notifications_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      rentals: {
-        Row: {
-          client_id: string
-          created_at: string
-          end_date: string | null
-          equipment_id: string
-          id: string
-          notes: string | null
-          start_date: string
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          client_id: string
-          created_at?: string
-          end_date?: string | null
-          equipment_id: string
-          id?: string
-          notes?: string | null
-          start_date: string
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          client_id?: string
-          created_at?: string
-          end_date?: string | null
-          equipment_id?: string
-          id?: string
-          notes?: string | null
-          start_date?: string
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "rentals_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "rentals_equipment_id_fkey"
-            columns: ["equipment_id"]
-            isOneToOne: false
-            referencedRelation: "equipments"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      support_tickets: {
-        Row: {
-          admin_response: string | null
-          attachment_url: string | null
-          category: string
-          client_id: string
-          created_at: string
-          equipment_id: string | null
-          id: string
-          message: string
-          status: string
-          subject: string
-          updated_at: string
-        }
-        Insert: {
-          admin_response?: string | null
-          attachment_url?: string | null
-          category: string
-          client_id: string
-          created_at?: string
-          equipment_id?: string | null
-          id?: string
-          message: string
-          status?: string
-          subject: string
-          updated_at?: string
-        }
-        Update: {
-          admin_response?: string | null
-          attachment_url?: string | null
-          category?: string
-          client_id?: string
-          created_at?: string
-          equipment_id?: string | null
-          id?: string
-          message?: string
-          status?: string
-          subject?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "support_tickets_client_id_fkey"
-            columns: ["client_id"]
-            isOneToOne: false
-            referencedRelation: "clients"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "support_tickets_equipment_id_fkey"
-            columns: ["equipment_id"]
-            isOneToOne: false
-            referencedRelation: "equipments"
-            referencedColumns: ["id"]
-          },
-        ]
       }
       user_roles: {
         Row: {
@@ -428,11 +321,6 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      can_access_equipment: {
-        Args: { _equipment_id: string }
-        Returns: boolean
-      }
-      client_is_active: { Args: { _client_id: string }; Returns: boolean }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -440,18 +328,11 @@ export type Database = {
         }
         Returns: boolean
       }
-      my_client_id: { Args: never; Returns: string }
-      recompute_client_access: {
-        Args: { _client_id: string }
-        Returns: undefined
-      }
-      update_my_profile: {
-        Args: { _full_name: string; _whatsapp: string }
-        Returns: undefined
-      }
+      tem_acesso: { Args: never; Returns: boolean }
+      tem_equipamento: { Args: { _eq: string }; Returns: boolean }
     }
     Enums: {
-      app_role: "admin" | "client"
+      app_role: "admin" | "cliente"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -579,7 +460,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["admin", "client"],
+      app_role: ["admin", "cliente"],
     },
   },
 } as const
