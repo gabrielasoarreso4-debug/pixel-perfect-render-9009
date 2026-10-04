@@ -56,11 +56,6 @@ function Index() {
             <Button asChild size="lg">
               <Link to={signedIn ? "/home" : "/auth"}>{signedIn ? "Acessar minha área" : "Entrar na minha conta"}</Link>
             </Button>
-            {!signedIn && (
-              <Button asChild size="lg" variant="outline">
-                <Link to="/auth" search={{ mode: "signup" }}>Criar conta</Link>
-              </Button>
-            )}
           </div>
         </div>
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-brand p-8 text-primary-foreground shadow-float md:p-10">
