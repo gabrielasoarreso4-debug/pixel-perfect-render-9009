@@ -38,7 +38,7 @@ function Index() {
       <header className="flex items-center justify-between border-b bg-card px-5 py-4 shadow-card md:px-12">
         <Wordmark />
         <Button asChild variant="outline" size="sm">
-          <Link to={signedIn ? "/inicio" : "/auth"}>{signedIn ? "Minha área" : "Entrar"}</Link>
+          <Link to={signedIn ? "/home" : "/auth"}>{signedIn ? "Minha área" : "Entrar"}</Link>
         </Button>
       </header>
 
@@ -54,13 +54,8 @@ function Index() {
           </p>
           <div className="mt-8 flex flex-wrap gap-3">
             <Button asChild size="lg">
-              <Link to={signedIn ? "/inicio" : "/auth"}>{signedIn ? "Acessar minha área" : "Entrar na minha conta"}</Link>
+              <Link to={signedIn ? "/home" : "/auth"}>{signedIn ? "Acessar minha área" : "Entrar na minha conta"}</Link>
             </Button>
-            {!signedIn && (
-              <Button asChild size="lg" variant="outline">
-                <Link to="/auth" search={{ mode: "signup" }}>Criar conta</Link>
-              </Button>
-            )}
           </div>
         </div>
         <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-brand p-8 text-primary-foreground shadow-float md:p-10">

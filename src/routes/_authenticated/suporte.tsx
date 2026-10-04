@@ -9,8 +9,7 @@ import { PageHeader } from "@/components/brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { TICKET_CATEGORIES, TICKET_STATUS, formatDate, useMe, whatsappUrl } from "@/lib/data";
-import { useMyEquipments } from "@/lib/client-queries";
+import { CHAMADO_CATEGORIAS, CHAMADO_STATUS, formatDate, useMe, whatsappUrl } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/suporte")({
   validateSearch: (s: Record<string, unknown>): { equipamento?: string | undefined } => ({
@@ -27,60 +26,61 @@ export const Route = createFileRoute("/_authenticated/suporte")({
 function Page() {
   const { equipamento } = Route.useSearch();
   const { data: me } = useMe();
-  const { data: equipments = [] } = useMyEquipments();
   const qc = useQueryClient();
-  const [form, setForm] = useState({ subject: "", category: TICKET_CATEGORIES[0]!, message: "", equipment_id: equipamento ?? "" });
-  const { data: tickets = [] } = useQuery({
-    queryKey: ["my-tickets"],
-    queryFn: async () => (await supabase.from("support_tickets").select("*").order("created_at", { ascending: false })).data ?? [],
+  const [form, setForm] = useState({ assunto: "", categoria: CHAMADO_CATEGORIAS[0]!, mensagem: "", equipamento_id: equipamento ?? "" });
+  const { data: equipamentos = [] } = useQuery({
+    queryKey: ["equipamentos-visiveis"],
+    queryFn: async () => (await supabase.from("equipamentos").select("*").eq("ativo", true).order("ordem")).data ?? [],
   });
-  const wa = whatsappUrl(me?.settings?.support_whatsapp, "Olá! Sou cliente Sinoslaser e preciso de ajuda.");
+  const { data: chamados = [] } = useQuery({
+    queryKey: ["meus-chamados"],
+    queryFn: async () => (await supabase.from("chamados").select("*").order("created_at", { ascending: false })).data ?? [],
+  });
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!me?.client) return;
-    if (!form.subject.trim() || !form.message.trim()) return void toast.error("Preencha assunto e mensagem.");
-    const { error } = await supabase.from("support_tickets").insert({
-      client_id: me.client.id,
-      subject: form.subject.trim().slice(0, 150),
-      category: form.category,
-      message: form.message.trim().slice(0, 3000),
-      equipment_id: form.equipment_id || null,
+    if (!me?.profile) return;
+    if (!form.assunto.trim() || !form.mensagem.trim()) return void toast.error("Preencha assunto e mensagem.");
+    const { error } = await supabase.from("chamados").insert({
+      cliente_id: me.profile.id,
+      assunto: form.assunto.trim().slice(0, 150),
+      categoria: form.categoria,
+      mensagem: form.mensagem.trim().slice(0, 3000),
+      equipamento_id: form.equipamento_id || null,
     });
     if (error) return void toast.error("Não foi possível enviar.");
     toast.success("Chamado enviado!");
-    setForm({ ...form, subject: "", message: "" });
-    qc.invalidateQueries({ queryKey: ["my-tickets"] });
+    setForm({ ...form, assunto: "", mensagem: "" });
+    qc.invalidateQueries({ queryKey: ["meus-chamados"] });
   }
 
+  const sel = "h-11 w-full rounded-md border bg-background px-3 text-sm";
   return (
     <>
       <PageHeader eyebrow="Suporte" title="Precisa de ajuda?" />
-      {wa && (
-        <Button asChild variant="whatsapp" size="lg" className="mb-6">
-          <a href={wa} target="_blank" rel="noreferrer"><MessageCircle /> Falar pelo WhatsApp</a>
-        </Button>
-      )}
+      <Button asChild variant="whatsapp" size="lg" className="mb-6">
+        <a href={whatsappUrl("Olá! Sou cliente Sinoslaser e preciso de ajuda.")} target="_blank" rel="noreferrer"><MessageCircle /> Falar pelo WhatsApp</a>
+      </Button>
       <form onSubmit={submit} className="space-y-3 rounded-3xl border bg-card p-6 shadow-card">
         <h2 className="text-xl font-semibold text-primary">Abrir chamado</h2>
-        <Input placeholder="Assunto" value={form.subject} onChange={(e) => setForm({ ...form, subject: e.target.value })} />
-        <select className="h-11 w-full rounded-md border bg-background px-3 text-sm" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })}>
-          {TICKET_CATEGORIES.map((c) => <option key={c}>{c}</option>)}
+        <Input placeholder="Assunto" value={form.assunto} onChange={(e) => setForm({ ...form, assunto: e.target.value })} />
+        <select className={sel} value={form.categoria} onChange={(e) => setForm({ ...form, categoria: e.target.value })}>
+          {CHAMADO_CATEGORIAS.map((c) => <option key={c}>{c}</option>)}
         </select>
-        <select className="h-11 w-full rounded-md border bg-background px-3 text-sm" value={form.equipment_id} onChange={(e) => setForm({ ...form, equipment_id: e.target.value })}>
+        <select className={sel} value={form.equipamento_id} onChange={(e) => setForm({ ...form, equipamento_id: e.target.value })}>
           <option value="">Equipamento (opcional)</option>
-          {equipments.map((eq) => <option key={eq.id} value={eq.id}>{eq.name}</option>)}
+          {equipamentos.map((eq) => <option key={eq.id} value={eq.id}>{eq.nome}</option>)}
         </select>
-        <Textarea placeholder="Mensagem" rows={5} value={form.message} onChange={(e) => setForm({ ...form, message: e.target.value })} />
+        <Textarea placeholder="Mensagem" rows={5} value={form.mensagem} onChange={(e) => setForm({ ...form, mensagem: e.target.value })} />
         <Button type="submit">Enviar chamado</Button>
       </form>
-      <h2 className="mt-8 mb-3 text-xl font-semibold text-primary">Meus chamados</h2>
+      <h2 className="mb-3 mt-8 text-xl font-semibold text-primary">Meus chamados</h2>
       <div className="space-y-3">
-        {tickets.map((t) => (
+        {chamados.map((t) => (
           <div key={t.id} className="rounded-2xl border bg-card p-4">
-            <div className="flex justify-between text-xs text-muted-foreground"><span>{t.category} · {formatDate(t.created_at)}</span><span className="font-medium text-primary">{TICKET_STATUS[t.status]}</span></div>
-            <p className="mt-1 font-semibold text-primary">{t.subject}</p>
-            {t.admin_response && <p className="mt-2 rounded-xl bg-primary-soft p-3 text-sm">{t.admin_response}</p>}
+            <div className="flex justify-between text-xs text-muted-foreground"><span>{t.categoria} · {formatDate(t.created_at)}</span><span className="font-medium text-primary">{CHAMADO_STATUS[t.status]}</span></div>
+            <p className="mt-1 font-semibold text-primary">{t.assunto}</p>
+            {t.resposta && <p className="mt-2 rounded-xl bg-primary-soft p-3 text-sm">{t.resposta}</p>}
           </div>
         ))}
       </div>
