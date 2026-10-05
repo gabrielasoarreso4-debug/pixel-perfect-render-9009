@@ -24,7 +24,7 @@ function Page() {
   const [pw, setPw] = useState("");
 
   async function changePw() {
-    if (pw.length < 8) return void toast.error("A nova senha precisa ter 8+ caracteres.");
+    if (pw.length < 6) return void toast.error("A nova senha precisa ter 6+ caracteres.");
     const { error } = await supabase.auth.updateUser({ password: pw, current_password: cur } as never);
     if (error) return void toast.error("Não foi possível alterar a senha. Confira a senha atual.");
     toast.success("Senha alterada.");
