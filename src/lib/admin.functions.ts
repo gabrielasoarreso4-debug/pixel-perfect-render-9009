@@ -24,7 +24,7 @@ export const existeAdmin = createServerFn({ method: "GET" }).handler(async () =>
 const criarSchema = z.object({
   nome: z.string().trim().min(2).max(120),
   usuario: usuarioSchema,
-  senha: z.string().min(8, "Senha com 8+ caracteres").max(72),
+  senha: z.string().min(6, "Senha com 6+ caracteres").max(72),
 });
 
 async function criarUsuario(data: z.infer<typeof criarSchema>, role: "admin" | "cliente", extra?: { acesso_ate?: string | null }) {
@@ -71,7 +71,7 @@ export const criarCliente = createServerFn({ method: "POST" })
 
 export const alterarSenhaCliente = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ id: z.string().uuid(), senha: z.string().min(8).max(72) }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid(), senha: z.string().min(6).max(72) }).parse(d))
   .handler(async ({ data, context }) => {
     await exigirAdmin(context);
     const sb = await admin();
