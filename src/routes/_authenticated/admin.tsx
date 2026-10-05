@@ -111,7 +111,7 @@ function Clientes() {
         <h2 className="font-semibold text-primary">Nova cliente</h2>
         <Input placeholder="Nome" value={f.nome} onChange={(e) => setF({ ...f, nome: e.target.value })} required />
         <Input placeholder="Usuário (ex.: maria.silva)" value={f.usuario} onChange={(e) => setF({ ...f, usuario: e.target.value })} required />
-        <Input placeholder="Senha (8+ caracteres)" value={f.senha} onChange={(e) => setF({ ...f, senha: e.target.value })} required />
+        <Input placeholder="Senha (6+ caracteres)" value={f.senha} onChange={(e) => setF({ ...f, senha: e.target.value })} required />
         <label className="block text-xs text-muted-foreground">Acesso até (opcional)<Input type="date" value={f.acesso_ate} onChange={(e) => setF({ ...f, acesso_ate: e.target.value })} /></label>
         <Button type="submit" disabled={busy} className="w-full">{busy ? "Criando..." : "Criar cliente"}</Button>
       </form>
@@ -138,7 +138,7 @@ function Clientes() {
                     if (nome && nome.trim() && nome !== c.nome) update(c.id, { nome: nome.trim() });
                   }}>Editar nome</Button>
                   <Button size="sm" variant="ghost" onClick={async () => {
-                    const s = prompt("Nova senha (8+ caracteres)");
+                    const s = prompt("Nova senha (6+ caracteres)");
                     if (!s) return;
                     try { await trocarSenha({ data: { id: c.id, senha: s } }); toast.success("Senha alterada."); } catch { toast.error("Senha inválida."); }
                   }}>Senha</Button>
