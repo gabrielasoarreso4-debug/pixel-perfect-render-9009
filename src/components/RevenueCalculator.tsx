@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { brl, hojeISO, useMe } from "@/lib/data";
 import { cn } from "@/lib/utils";
 
-type Props = { aluguelPadrao?: number | null; locacaoId?: string | null };
+type Props = { aluguelPadrao?: number | null | undefined; locacaoId?: string | null | undefined };
 
 export function RevenueCalculator({ aluguelPadrao, locacaoId }: Props) {
   const { data: me } = useMe();
