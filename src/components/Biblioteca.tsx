@@ -99,7 +99,7 @@ export function Biblioteca({ secao, materiais, loading }: { secao: Secao; materi
   );
 }
 
-function Card({ m, n, feito, onOpen }: { m: Material; n?: number; feito: boolean; onOpen: () => void }) {
+function Card({ m, n, feito, onOpen }: { m: Material; n?: number | undefined; feito: boolean; onOpen: () => void }) {
   const Icon = TIPO_ICON[m.tipo as keyof typeof TIPO_ICON] ?? Paperclip;
   return (
     <button onClick={onOpen} className="group flex flex-col overflow-hidden rounded-2xl border bg-card text-left shadow-card transition hover:-translate-y-0.5 hover:border-primary">

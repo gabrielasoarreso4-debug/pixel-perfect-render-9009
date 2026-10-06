@@ -47,7 +47,7 @@ export function MateriaisAdmin() {
     } else {
       setProg(0);
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
+        const file = files[i]!;
         const ext = file.name.split(".").pop()?.toLowerCase() || "bin";
         const path = `${secao}/${crypto.randomUUID()}.${ext}`;
         const up = await supabase.storage.from("materiais").upload(path, file, { contentType: file.type || undefined });
@@ -77,7 +77,7 @@ export function MateriaisAdmin() {
     const j = i + d;
     if (j < 0 || j >= lista.length) return;
     const nova = [...lista];
-    [nova[i], nova[j]] = [nova[j], nova[i]];
+    [nova[i], nova[j]] = [nova[j]!, nova[i]!];
     await Promise.all(nova.map((m, k) => supabase.from("materiais").update({ ordem: k }).eq("id", m.id)));
     refresh();
   }
