@@ -268,6 +268,92 @@ export type Database = {
           },
         ]
       }
+      materiais: {
+        Row: {
+          arquivo_path: string | null
+          categoria: string | null
+          created_at: string
+          descricao: string | null
+          duracao: string | null
+          equipamento_id: string | null
+          id: string
+          link_url: string | null
+          ordem: number
+          secao: string
+          tipo: string
+          titulo: string
+        }
+        Insert: {
+          arquivo_path?: string | null
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          duracao?: string | null
+          equipamento_id?: string | null
+          id?: string
+          link_url?: string | null
+          ordem?: number
+          secao: string
+          tipo: string
+          titulo: string
+        }
+        Update: {
+          arquivo_path?: string | null
+          categoria?: string | null
+          created_at?: string
+          descricao?: string | null
+          duracao?: string | null
+          equipamento_id?: string | null
+          id?: string
+          link_url?: string | null
+          ordem?: number
+          secao?: string
+          tipo?: string
+          titulo?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiais_equipamento_id_fkey"
+            columns: ["equipamento_id"]
+            isOneToOne: false
+            referencedRelation: "equipamentos"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      materiais_progresso: {
+        Row: {
+          cliente_id: string
+          concluido_em: string
+          material_id: string
+        }
+        Insert: {
+          cliente_id?: string
+          concluido_em?: string
+          material_id: string
+        }
+        Update: {
+          cliente_id?: string
+          concluido_em?: string
+          material_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "materiais_progresso_cliente_id_fkey"
+            columns: ["cliente_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "materiais_progresso_material_id_fkey"
+            columns: ["material_id"]
+            isOneToOne: false
+            referencedRelation: "materiais"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           acesso_ate: string | null
