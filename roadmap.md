@@ -1,4 +1,4 @@
 # Roadmap
-- [ ] Upload de vídeos (cursos/treinamentos) pelo admin, assistir no app — aguardando créditos
-- [ ] Upload de PDFs de marketing e vários documentos/protocolos por equipamento, leitura no app — aguardando créditos
+- [x] Upload de vídeos (aulas) pelo admin, assistir no app
+- [x] Upload de PDFs de marketing e protocolos/documentos, leitura no app
 - [x] Calculadora de potencial (lucro por diária)
