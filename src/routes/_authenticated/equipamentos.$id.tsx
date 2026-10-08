@@ -8,7 +8,8 @@ import { RevenueCalculator } from "@/components/RevenueCalculator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { Button } from "@/components/ui/button";
-import { embedUrl, useMe, whatsappUrl } from "@/lib/data";
+import { Biblioteca, useMateriais } from "@/components/Biblioteca";
+import { useMe, whatsappUrl } from "@/lib/data";
 
 export const Route = createFileRoute("/_authenticated/equipamentos/$id")({
   head: () => ({ meta: [{ title: "Equipamento — Sinoslaser" }] }),
@@ -42,10 +43,11 @@ function Detail() {
     queryFn: async () => (await supabase.storage.from("protocolos").createSignedUrl(eq!.protocolo_pdf_path!, 3600)).data?.signedUrl ?? null,
   });
 
+  const { data: materiais = [], isLoading: matLoading } = useMateriais(id);
+
   if (isLoading) return <Spinner />;
   if (!eq) return <EmptyState title="Equipamento não disponível" text="Este equipamento não está vinculado à sua conta." />;
 
-  const embed = eq.link_treinamento ? embedUrl(eq.link_treinamento) : null;
   const tab = "rounded-full px-4 py-2";
 
   return (
@@ -80,30 +82,18 @@ function Detail() {
         </TabsContent>
 
         <TabsContent value="treino" className="mt-6">
-          {eq.link_treinamento ? (
-            <div className="space-y-4">
-              {embed && <div className="aspect-video overflow-hidden rounded-2xl border bg-card"><iframe src={embed} title="Videoaula" className="h-full w-full" allow="autoplay; fullscreen" allowFullScreen /></div>}
-              <Button asChild><a href={eq.link_treinamento} target="_blank" rel="noreferrer"><PlayCircle /> Assistir videoaula</a></Button>
-            </div>
-          ) : <EmptyState title="Treinamento em breve" />}
+          <Biblioteca secao="treinamento" materiais={materiais} loading={matLoading} />
+          {eq.link_treinamento && <Button asChild variant="outline" className="mt-4"><a href={eq.link_treinamento} target="_blank" rel="noreferrer"><PlayCircle /> Videoaula externa</a></Button>}
         </TabsContent>
 
         <TabsContent value="protocolos" className="mt-6">
-          {pdfUrl ? (
-            <div className="space-y-4">
-              <iframe src={pdfUrl} title="Protocolos" className="h-[70vh] w-full rounded-2xl border bg-card" />
-              <Button asChild variant="outline"><a href={pdfUrl} target="_blank" rel="noreferrer" download><Download /> Baixar PDF</a></Button>
-            </div>
-          ) : <EmptyState title="Protocolos em breve" />}
+          <Biblioteca secao="protocolo" materiais={materiais} loading={matLoading} />
+          {pdfUrl && <Button asChild variant="outline" className="mt-4"><a href={pdfUrl} target="_blank" rel="noreferrer"><Download /> Protocolo principal (PDF)</a></Button>}
         </TabsContent>
 
         <TabsContent value="marketing" className="mt-6">
-          {eq.link_marketing ? (
-            <div className="rounded-3xl border bg-card p-6 shadow-card">
-              <h2 className="text-xl font-semibold text-primary">Materiais para divulgar seu procedimento</h2>
-              <Button asChild className="mt-4"><a href={eq.link_marketing} target="_blank" rel="noreferrer"><ExternalLink /> Abrir materiais</a></Button>
-            </div>
-          ) : <EmptyState title="Materiais em breve" />}
+          <Biblioteca secao="marketing" materiais={materiais} loading={matLoading} />
+          {eq.link_marketing && <Button asChild variant="outline" className="mt-4"><a href={eq.link_marketing} target="_blank" rel="noreferrer"><ExternalLink /> Pasta de materiais</a></Button>}
         </TabsContent>
 
         <TabsContent value="faq" className="mt-6">

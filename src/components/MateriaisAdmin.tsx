@@ -50,7 +50,7 @@ export function MateriaisAdmin() {
         const file = files[i]!;
         const ext = file.name.split(".").pop()?.toLowerCase() || "bin";
         const path = `${secao}/${crypto.randomUUID()}.${ext}`;
-        const up = await supabase.storage.from("materiais").upload(path, file, { contentType: file.type || undefined });
+        const up = await supabase.storage.from("materiais").upload(path, file, file.type ? { contentType: file.type } : {});
         if (up.error) { setProg(null); return void toast.error(`Falha ao enviar ${file.name}.`); }
         const titulo = files.length === 1 && f.titulo.trim() ? f.titulo.trim() : file.name.replace(/\.[^.]+$/, "");
         const { error } = await supabase.from("materiais").insert({ ...comum, titulo, tipo: tipoDoArquivo(file), arquivo_path: path, ordem: base + i });

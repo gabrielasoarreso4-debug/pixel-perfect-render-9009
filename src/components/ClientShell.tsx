@@ -1,7 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
 import { useQueryClient } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { Home, Sparkles, Calculator, LifeBuoy, User, ShieldCheck, LogOut, MessageCircle, Clock } from "lucide-react";
+import { Home, Sparkles, Calculator, LifeBuoy, User, ShieldCheck, LogOut, MessageCircle, Clock, GraduationCap } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { Wordmark } from "@/components/brand";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { temAcesso, useMe, whatsappUrl } from "@/lib/data";
 const NAV = [
   { to: "/home", label: "Início", icon: Home },
   { to: "/equipamentos", label: "Equipamentos", icon: Sparkles },
+  { to: "/conteudos", label: "Conteúdos", icon: GraduationCap },
   { to: "/calculadora", label: "Calculadora", icon: Calculator },
   { to: "/suporte", label: "Suporte", icon: LifeBuoy },
   { to: "/perfil", label: "Perfil", icon: User },
@@ -93,7 +94,7 @@ export function ClientShell({ children }: { children: ReactNode }) {
       </div>
 
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur md:hidden">
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-6">
           {NAV.map((n) => (
             <Link key={n.to} to={n.to} className="flex flex-col items-center gap-1 py-2.5 text-[10px] font-medium text-muted-foreground" activeProps={{ className: "!text-primary" }}>
               <n.icon className="size-5" />
