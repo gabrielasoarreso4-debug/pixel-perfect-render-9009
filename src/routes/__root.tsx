@@ -117,12 +117,21 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;
-      router.invalidate();
-      if (event !== "SIGNED_OUT") queryClient.invalidateQueries();
+      // Auth listeners run under the auth lock. Route guards and queries call
+      // getUser(), so refresh only after this synchronous callback has returned.
+      clearTimeout(refreshTimer);
+      refreshTimer = setTimeout(() => {
+        void router.invalidate();
+        if (event !== "SIGNED_OUT") void queryClient.invalidateQueries();
+      }, 0);
     });
-    return () => data.subscription.unsubscribe();
+    return () => {
+      clearTimeout(refreshTimer);
+      data.subscription.unsubscribe();
+    };
   }, [router, queryClient]);
 
   return (
