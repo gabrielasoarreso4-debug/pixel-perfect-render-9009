@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { addDays, brl, CHAMADO_STATUS, daysUntil, formatDate, LOCACAO_STATUS, useMe, type Equipamento, type Profile } from "@/lib/data";
+import { MateriaisAdmin } from "@/components/MateriaisAdmin";
 import { alterarSenhaCliente, criarCliente } from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
@@ -60,6 +61,7 @@ function Admin() {
               <TabsTrigger value="clientes" className={t}>Clientes</TabsTrigger>
               <TabsTrigger value="locacoes" className={t}>Locações</TabsTrigger>
               <TabsTrigger value="equip" className={t}>Equipamentos</TabsTrigger>
+              <TabsTrigger value="materiais" className={t}>Aulas e materiais</TabsTrigger>
               <TabsTrigger value="faq" className={t}>Perguntas</TabsTrigger>
               <TabsTrigger value="chamados" className={t}>Chamados</TabsTrigger>
             </TabsList>
@@ -67,6 +69,7 @@ function Admin() {
           <TabsContent value="clientes" className="mt-6"><Clientes /></TabsContent>
           <TabsContent value="locacoes" className="mt-6"><Locacoes /></TabsContent>
           <TabsContent value="equip" className="mt-6"><Equipamentos /></TabsContent>
+          <TabsContent value="materiais" className="mt-6"><MateriaisAdmin /></TabsContent>
           <TabsContent value="faq" className="mt-6"><FaqAdmin /></TabsContent>
           <TabsContent value="chamados" className="mt-6"><Chamados /></TabsContent>
         </Tabs>
