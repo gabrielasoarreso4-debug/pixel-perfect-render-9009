@@ -28,9 +28,9 @@ const email = (u: string) => `${u.trim().normalize("NFD").replace(/[\u0300-\u036
 function AuthPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [usuario, setUsuario] = useState("");
+  const [usuario, setUsuario] = useState("Cauã");
   const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
+  const [nome, setNome] = useState("Cauã");
   const [loading, setLoading] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
   const [setup, setSetup] = useState(false);
