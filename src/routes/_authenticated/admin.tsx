@@ -27,10 +27,24 @@ function useClientes() {
   return useQuery({
     queryKey: ["adm-clientes"],
     queryFn: async () => {
-      const { data: roles } = await supabase.from("user_roles").select("user_id").eq("role", "cliente");
+      const { data: roles, error: rolesError } = await supabase
+        .from("user_roles")
+        .select("user_id")
+        .eq("role", "cliente");
+      if (rolesError) {
+        console.error("[admin] Falha ao listar papéis de clientes:", rolesError);
+        throw new Error(`Não foi possível carregar os clientes: ${rolesError.message}`);
+      }
+
       const ids = (roles ?? []).map((r) => r.user_id);
       if (!ids.length) return [] as Profile[];
-      return (await supabase.from("profiles").select("*").in("id", ids).order("nome")).data ?? [];
+
+      const { data, error } = await supabase.from("profiles").select("*").in("id", ids).order("nome");
+      if (error) {
+        console.error("[admin] Falha ao carregar perfis de clientes:", error);
+        throw new Error(`Não foi possível carregar os clientes: ${error.message}`);
+      }
+      return data ?? [];
     },
   });
 }
@@ -82,7 +96,7 @@ function Clientes() {
   const qc = useQueryClient();
   const criar = useServerFn(criarCliente);
   const trocarSenha = useServerFn(alterarSenhaCliente);
-  const { data = [], isLoading } = useClientes();
+  const { data = [], isLoading, error } = useClientes();
   const [f, setF] = useState({ nome: "", usuario: "", senha: "", acesso_ate: "" });
   const [busy, setBusy] = useState(false);
 
@@ -93,9 +107,10 @@ function Clientes() {
       await criar({ data: { ...f, acesso_ate: f.acesso_ate || null } });
       toast.success("Cliente criada!");
       setF({ nome: "", usuario: "", senha: "", acesso_ate: "" });
-      qc.invalidateQueries({ queryKey: ["adm-clientes"] });
+      await qc.invalidateQueries({ queryKey: ["adm-clientes"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Erro ao criar.");
+      console.error("[admin] Falha ao criar cliente:", err);
+      toast.error(err instanceof Error ? err.message : "Não foi possível criar o cliente. Consulte o console e os logs do servidor.");
     } finally {
       setBusy(false);
     }
@@ -119,7 +134,7 @@ function Clientes() {
         <Button type="submit" disabled={busy} className="w-full">{busy ? "Criando..." : "Criar cliente"}</Button>
       </form>
       <div className="space-y-3">
-        {isLoading ? <Spinner /> : data.length === 0 ? <EmptyState title="Nenhuma cliente cadastrada" /> : data.map((c) => {
+        {isLoading ? <Spinner /> : error ? <EmptyState title="Não foi possível carregar os clientes" text={error.message} /> : data.length === 0 ? <EmptyState title="Nenhuma cliente cadastrada" /> : data.map((c) => {
           const left = daysUntil(c.acesso_ate);
           const vencendo = left !== null && left >= 0 && left <= 7;
           return (
@@ -157,7 +172,12 @@ function Clientes() {
 
 function Locacoes() {
   const qc = useQueryClient();
-  const { data: clientes = [] } = useClientes();
+  const { data: clientes = [], isLoading: carregandoClientes, error: erroClientes } = useClientes();
+  const [buscaCliente, setBuscaCliente] = useState("");
+  const clientesFiltrados = clientes.filter((cliente) =>
+    cliente.id === f.cliente_id || cliente.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
+      .includes(buscaCliente.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase()),
+  );
   const { data: equips = [] } = useEquipamentos();
   const { data = [], isLoading } = useQuery({
     queryKey: ["adm-locacoes"],
@@ -180,10 +200,16 @@ function Locacoes() {
       cliente_id: f.cliente_id, equipamento_id: f.equipamento_id, data_inicio: f.data_inicio, data_fim: f.data_fim,
       diarias_contratadas: Number(f.diarias_contratadas) || 1, horas_por_diaria: Number(f.horas_por_diaria), valor_diaria: Number(f.valor_diaria) || 0, status: f.status,
     });
-    if (error) return void toast.error("Não foi possível criar.");
+    if (error) {
+      console.error("[admin] Falha ao criar locação:", error);
+      return void toast.error(error.message || "Não foi possível criar a locação. Consulte os logs.");
+    }
     toast.success("Locação criada!");
     setF(empty);
-    qc.invalidateQueries({ queryKey: ["adm-locacoes"] });
+    await Promise.all([
+      qc.invalidateQueries({ queryKey: ["adm-locacoes"] }),
+      qc.invalidateQueries({ queryKey: ["adm-clientes"] }),
+    ]);
   }
 
   async function setStatus(id: string, status: string) {
@@ -206,9 +232,30 @@ function Locacoes() {
     <div className="grid gap-6 lg:grid-cols-[340px_1fr]">
       <form onSubmit={submit} className={`${card} space-y-3 self-start`}>
         <h2 className="font-semibold text-primary">Nova locação</h2>
-        <select className={sel} value={f.cliente_id} onChange={(e) => setF({ ...f, cliente_id: e.target.value })}>
-          <option value="">Cliente</option>{clientes.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
-        </select>
+        <div className="animate-in fade-in-0 slide-in-from-top-2 duration-300 space-y-2">
+          <label htmlFor="buscar-cliente" className="text-xs font-medium text-muted-foreground">Cliente</label>
+          <Input
+            id="buscar-cliente"
+            type="search"
+            placeholder="Buscar cliente pelo nome"
+            value={buscaCliente}
+            onChange={(e) => setBuscaCliente(e.target.value)}
+            disabled={carregandoClientes || Boolean(erroClientes)}
+            className="transition-shadow focus-visible:ring-2 focus-visible:ring-primary/30"
+          />
+          <select
+            aria-label="Selecionar cliente"
+            className={sel}
+            value={f.cliente_id}
+            disabled={carregandoClientes || Boolean(erroClientes)}
+            onChange={(e) => setF({ ...f, cliente_id: e.target.value })}
+            required
+          >
+            <option value="">{carregandoClientes ? "Carregando clientes..." : clientesFiltrados.length ? "Selecione um cliente" : clientes.length ? "Nenhum cliente encontrado" : "Nenhum cliente cadastrado"}</option>
+            {clientesFiltrados.map((c) => <option key={c.id} value={c.id}>{c.nome}</option>)}
+          </select>
+          {erroClientes && <p role="alert" className="text-xs text-destructive">{erroClientes.message}</p>}
+        </div>
         <select className={sel} value={f.equipamento_id} onChange={(e) => pickEquip(e.target.value)}>
           <option value="">Equipamento</option>{equips.filter((e) => e.ativo).map((e) => <option key={e.id} value={e.id}>{e.nome}</option>)}
         </select>
