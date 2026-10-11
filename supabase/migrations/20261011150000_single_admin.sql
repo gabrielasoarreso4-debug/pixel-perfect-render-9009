@@ -1,4 +1,4 @@
--- Keep a single administrator account. Prefer the configured owner handle when it already exists.
+-- Keep a single administrator account. Prefer Cauã's account (`caua`) when it already exists.
 DO $$
 DECLARE
   keep_admin_id uuid;
