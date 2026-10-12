@@ -174,6 +174,8 @@ function Locacoes() {
   const qc = useQueryClient();
   const { data: clientes = [], isLoading: carregandoClientes, error: erroClientes } = useClientes();
   const [buscaCliente, setBuscaCliente] = useState("");
+  const empty = { cliente_id: "", equipamento_id: "", data_inicio: "", data_fim: "", diarias_contratadas: "1", horas_por_diaria: "10", valor_diaria: "", status: "agendada" };
+  const [f, setF] = useState(empty);
   const clientesFiltrados = clientes.filter((cliente) =>
     cliente.id === f.cliente_id || cliente.nome.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()
       .includes(buscaCliente.normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim().toLowerCase()),
@@ -183,8 +185,6 @@ function Locacoes() {
     queryKey: ["adm-locacoes"],
     queryFn: async () => (await supabase.from("locacoes").select("*, equipamentos(nome), profiles(nome, acesso_ate)").order("data_inicio", { ascending: false })).data ?? [],
   });
-  const empty = { cliente_id: "", equipamento_id: "", data_inicio: "", data_fim: "", diarias_contratadas: "1", horas_por_diaria: "10", valor_diaria: "", status: "agendada" };
-  const [f, setF] = useState(empty);
   const [encerrando, setEncerrando] = useState<{ id: string; cliente_id: string; ate: string } | null>(null);
 
   function pickEquip(id: string) {
