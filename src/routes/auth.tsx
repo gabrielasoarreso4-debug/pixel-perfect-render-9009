@@ -23,14 +23,14 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const email = (u: string) => `${u.trim().toLowerCase()}@app.local`;
+const email = (u: string) => `${u.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase()}@app.local`;
 
 function AuthPage() {
   const navigate = useNavigate();
   const qc = useQueryClient();
-  const [usuario, setUsuario] = useState("");
+  const [usuario, setUsuario] = useState("Cauã");
   const [senha, setSenha] = useState("");
-  const [nome, setNome] = useState("");
+  const [nome, setNome] = useState("Cauã");
   const [loading, setLoading] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
   const [setup, setSetup] = useState(false);

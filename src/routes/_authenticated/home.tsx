@@ -51,7 +51,7 @@ function Home() {
 
   return (
     <div className="space-y-8">
-      <section>
+      <section className="motion-safe:animate-in motion-safe:fade-in-0 motion-safe:slide-in-from-bottom-2 motion-safe:duration-500">
         <p className="eyebrow">Área do cliente</p>
         <h1 className="mt-1 text-4xl font-bold text-primary md:text-5xl">Olá{firstName ? `, ${firstName}` : ""}</h1>
         <p className="mt-2 text-muted-foreground">Que bom ter você aqui.</p>
@@ -93,7 +93,7 @@ function Home() {
         ) : (
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {[...equipMap.values()].map(({ eq, locado }) => (
-              <article key={eq.id} className="overflow-hidden rounded-3xl border bg-card shadow-card">
+              <article key={eq.id} className="overflow-hidden rounded-3xl border bg-card shadow-card transition-all duration-200 hover:-translate-y-1 hover:shadow-xl motion-reduce:transition-none">
                 <div className="relative aspect-[4/3]">
                   <EquipmentImage equipment={eq} />
                   <span className={`absolute left-3 top-3 rounded-full px-3 py-1 text-xs font-medium ${locado ? "bg-success text-primary-foreground" : "bg-card text-primary"}`}>
@@ -126,7 +126,7 @@ function Banner({ children }: { children: React.ReactNode }) {
 
 function Card({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-2xl border bg-card p-4 shadow-card">
+    <div className="rounded-2xl border bg-card p-4 shadow-card transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg motion-reduce:transition-none">
       <p className="text-xs text-muted-foreground">{label}</p>
       <p className="mt-1 font-display text-2xl font-bold tabular-nums text-primary">{value}</p>
     </div>
