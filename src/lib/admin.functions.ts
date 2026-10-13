@@ -51,13 +51,14 @@ export const existeAdmin = createServerFn({ method: "GET" }).handler(async () =>
   const sb = await admin();
   const { count, error } = await sb.from("user_roles").select("id", { count: "exact", head: true }).eq("role", "admin");
   if (error) throw erroCadastro(error, "verificar administrador");
-  return { existe: (count ?? 0) > 0 };
+  const { isBootstrapSecretConfigured } = await import("@/lib/admin-bootstrap-secret.server");
+  return { existe: (count ?? 0) > 0, bootstrapEnabled: isBootstrapSecretConfigured(process.env.ADMIN_BOOTSTRAP_SECRET) };
 });
 
 const criarSchema = z.object({
   nome: z.string().trim().min(2, "Informe o nome completo.").max(120, "O nome deve ter até 120 caracteres."),
   usuario: usuarioSchema,
-  senha: z.string().min(6, "A senha precisa ter pelo menos 6 caracteres.").max(72, "A senha deve ter até 72 caracteres."),
+  senha: z.string().min(12, "A senha precisa ter pelo menos 12 caracteres.").max(72, "A senha deve ter até 72 caracteres."),
 });
 
 async function criarUsuario(data: z.infer<typeof criarSchema>, role: "admin" | "cliente", extra?: { acesso_ate?: string | null }) {
@@ -105,15 +106,21 @@ async function criarUsuario(data: z.infer<typeof criarSchema>, role: "admin" | "
 // Only works while no admin exists (first setup).
 export const criarPrimeiroAdmin = createServerFn({ method: "POST" })
   .inputValidator((d) => criarSchema.extend({
+    bootstrapSecret: z.string().min(32).max(256),
     nome: z.string().trim().min(2, "Informe o nome completo.").max(120, "O nome deve ter até 120 caracteres."),
-    senha: z.string().min(6, "Senha com 6+ caracteres").max(72, "A senha deve ter até 72 caracteres."),
+    senha: z.string().min(12, "Senha com 12+ caracteres").max(72, "A senha deve ter até 72 caracteres."),
   }).parse(d))
   .handler(async ({ data }) => {
+    const { isBootstrapSecretValid } = await import("@/lib/admin-bootstrap-secret.server");
+    if (!isBootstrapSecretValid(process.env.ADMIN_BOOTSTRAP_SECRET, data.bootstrapSecret)) {
+      throw new Error("Código de configuração inicial inválido ou desabilitado.");
+    }
+    const adminData = { nome: data.nome, usuario: data.usuario, senha: data.senha };
     const sb = await admin();
     const { count, error } = await sb.from("user_roles").select("id", { count: "exact", head: true }).eq("role", "admin");
     if (error) throw erroCadastro(error, "verificar administrador");
     if ((count ?? 0) > 0) throw new Error("Já existe um administrador.");
-    return criarUsuario(data, "admin");
+    return criarUsuario(adminData, "admin");
   });
 
 async function exigirAdmin(context: { supabase: any; userId: string }) {
@@ -132,7 +139,7 @@ export const criarCliente = createServerFn({ method: "POST" })
 
 export const alterarSenhaCliente = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d) => z.object({ id: z.string().uuid(), senha: z.string().min(6).max(72) }).parse(d))
+  .inputValidator((d) => z.object({ id: z.string().uuid(), senha: z.string().min(12).max(72) }).parse(d))
   .handler(async ({ data, context }) => {
     await exigirAdmin(context);
     const sb = await admin();

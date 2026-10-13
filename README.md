@@ -22,3 +22,10 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+
+## Preparação para MVP
+
+Consulte [docs/arquitetura-mvp.md](docs/arquitetura-mvp.md) para a arquitetura, variáveis de ambiente, implantação na Vercel e roteiro de validação.
+
+Use Node.js 24 ou superior. Copie `.env.example` para `.env` no ambiente local e preencha as variáveis com os valores do projeto Supabase. Nunca coloque chaves administrativas em variáveis `VITE_*`.

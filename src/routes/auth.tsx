@@ -30,6 +30,7 @@ function AuthPage() {
   const qc = useQueryClient();
   const [usuario, setUsuario] = useState("Cauã");
   const [senha, setSenha] = useState("");
+  const [bootstrapSecret, setBootstrapSecret] = useState("");
   const [nome, setNome] = useState("Cauã");
   const [loading, setLoading] = useState(false);
   const [bloqueado, setBloqueado] = useState(false);
@@ -50,7 +51,7 @@ function AuthPage() {
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => data.session && rotear());
-    existeAdmin().then((r) => setSetup(!r.existe)).catch(() => {});
+    existeAdmin().then((r) => setSetup(!r.existe && r.bootstrapEnabled)).catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -60,7 +61,8 @@ function AuthPage() {
     setBloqueado(false);
     try {
       if (setup) {
-        await criarPrimeiroAdmin({ data: { nome, usuario, senha } });
+        await criarPrimeiroAdmin({ data: { nome, usuario, senha, bootstrapSecret } });
+        setBootstrapSecret("");
         toast.success("Administrador criado!");
       }
       const { error } = await supabase.auth.signInWithPassword({ email: email(usuario), password: senha });
@@ -109,7 +111,8 @@ function AuthPage() {
               <Field label="Nome"><Input value={nome} onChange={(e) => setNome(e.target.value)} required className="h-12 rounded-full px-5" /></Field>
             )}
             <Field label="Usuário"><Input autoCapitalize="none" autoComplete="username" value={usuario} onChange={(e) => setUsuario(e.target.value)} required className="h-12 rounded-full px-5" /></Field>
-            <Field label="Senha"><Input type="password" autoComplete="current-password" value={senha} onChange={(e) => setSenha(e.target.value)} required className="h-12 rounded-full px-5" /></Field>
+            {setup && <Field label="Código de configuração inicial"><Input type="password" autoComplete="off" minLength={32} maxLength={256} value={bootstrapSecret} onChange={(e) => setBootstrapSecret(e.target.value)} required className="h-12 rounded-full px-5" /></Field>}
+            <Field label={setup ? "Senha (mínimo 12 caracteres)" : "Senha"}><Input type="password" autoComplete={setup ? "new-password" : "current-password"} minLength={setup ? 12 : undefined} maxLength={72} value={senha} onChange={(e) => setSenha(e.target.value)} required className="h-12 rounded-full px-5" /></Field>
             <Button type="submit" size="lg" className="w-full" disabled={loading}>
               {loading ? "Aguarde..." : setup ? "Criar e entrar" : "Entrar"}
             </Button>
